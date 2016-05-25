@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'twitch_streams',
+    'django.contrib.sites',
     'facebook_users',
 ]
 
