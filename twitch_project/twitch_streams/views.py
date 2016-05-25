@@ -21,8 +21,6 @@ def fetch_results_csv(request, q=None):
         twitch_stream_users(q)
         twitch_channel_users(q)
 
-    print "QQQQQQQQQQQQQQQ"
-
     return HttpResponse('Done')
 
 

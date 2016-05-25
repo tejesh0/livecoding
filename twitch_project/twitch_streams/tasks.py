@@ -81,22 +81,22 @@ def twitch_channel_users(q=None):
                 Streamer.objects.create(name=r['name'], channel_id=r['_id'], status=r['status'])
 
 
-@periodic_task(
-    run_every=(crontab()),
-    name="fetch_users_from_twitch_stream",
-    ignore_result=True
-)
-def fetch_users_from_twitch_stream(q=None):
-    twitch_stream_users(q)
+# @periodic_task(
+#     run_every=(crontab()),
+#     name="fetch_users_from_twitch_stream",
+#     ignore_result=True
+# )
+# def fetch_users_from_twitch_stream(q=None):
+#     twitch_stream_users(q)
 
-    logger.info("Saved streaming users to Database")
+#     logger.info("Saved streaming users to Database")
 
 
-@periodic_task(
-    run_every=(crontab()),
-    name="fetch_users_from_twitch_channels",
-    ignore_result=True
-)
-def fetch_users_from_twitch_channels(q=None):
-    twitch_channel_users(q)
-    logger.info("Saved streaming channels to Database")
+# @periodic_task(
+#     run_every=(crontab()),
+#     name="fetch_users_from_twitch_channels",
+#     ignore_result=True
+# )
+# def fetch_users_from_twitch_channels(q=None):
+#     twitch_channel_users(q)
+#     logger.info("Saved streaming channels to Database")

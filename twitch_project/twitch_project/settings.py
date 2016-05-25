@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'twitch_streams',
+    'facebook_users',
 ]
 
 MIDDLEWARE_CLASSES = [
