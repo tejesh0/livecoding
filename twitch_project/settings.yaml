@@ -1,0 +1,18 @@
+client_config_backend: settings
+client_config:
+  client_id: 828401161196-crmoeuf1u1pp6jhu7uhkccrkckobgrns.apps.googleusercontent.com
+
+  client_secret: MQMoCCJJjoFRqqjsn7pX5tss
+
+  redirect_uri: https://powerful-waters-62163.herokuapp.com/
+
+save_credentials: True
+save_credentials_backend: file
+save_credentials_file: credentials.json
+
+get_refresh_token: True
+
+oauth_scope:
+  - https://www.googleapis.com/auth/drive.file
+  - https://www.googleapis.com/auth/drive.install
+ :+1: 1  
