@@ -8,7 +8,7 @@ import json
 APP_ID = '818991478245556'
 APP_SECRET = '2579d3f1a38b7f0ab5ea9d8c8c4bdfa5'
 VERSION = '2.6'
-REDIRECT_URI = 'http://localhost:5000/facebook/login_success'
+REDIRECT_URI = 'http://162.243.104.58:8004/facebook/login_success'
 HOST = 'https://graph.facebook.com'
 VERSION = 'v2.6'
 
