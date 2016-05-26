@@ -21,6 +21,10 @@ auth.secure = True
 auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 api = tweepy.API(auth)
 
+MIN_RETWEET_COUNT = 30
+MIN_FAVOURITE_COUNT = 50
+RETWEET_LIMIT = 20  # per day
+
 
 def test_tweept_api(request):
 
@@ -37,7 +41,8 @@ def test_tweept_api(request):
 
 
 def livecoding_oath(request):
-    auth_end_point = 'https://www.livecoding.tv/o/authorize/?scope=read&state=' + LIVECODING_SECRET +'&redirect_uri='+ LIVECODING_REDIRECT_URI +'&response_type=code&client_id=' + LIVECODING_KEY
+    auth_end_point = 'https://www.livecoding.tv/o/authorize/?scope=read&state=' + LIVECODING_SECRET + \
+        '&redirect_uri=' + LIVECODING_REDIRECT_URI + '&response_type=code&client_id=' + LIVECODING_KEY
     print(auth_end_point)
     try:
         res = urllib2.urlopen(auth_end_point)
@@ -72,14 +77,54 @@ def tweet_current_streams(request):
 
 
 def suggest_livecoding_tweet(request):
+    """
+    Check for tweets with keywords like 'livestreaming code' 'live programming'
+    but livecoding.tv missing
+    and suggest Livecoding.tv to them.
+    Hey! You should checkout Livecoding.tv ;)
+    """
 
+    # TO DO If ('livestreaming code' in tweet) and ('live programming' in tweet) and ('livecoding.tv/' not in tweet)
     search_results = api.search(q="live programming", count=100, result_type='recent')
 
     for result in search_results[:10]:
         # print(result)
         print(result.author._json['screen_name'])
         try:
-            api.update_status('Hey, you should checkout https://Livecoding.tv @'+result.author._json['screen_name'])
+            api.update_status('Hey, you should checkout https://Livecoding.tv @' + result.author._json['screen_name'])
         except:
             return HttpResponse('Open after some time, no new results found to tweet')
     return HttpResponse('Suggested')
+
+
+def engage_with_following_accounts(request):
+
+    # get following accounts
+    friends_ids = api.friends_ids(screen_name='tejesh95')
+
+    retweet_count = 0
+    for friend_id in friends_ids:
+        # get tweets from past
+        print("####", friend_id)
+        statuses = api.user_timeline(friend_id, count=4)
+        for status in statuses:
+            print(status._json['retweet_count'])
+            # check if tweet has 10 retweets
+            if status._json['retweet_count'] > MIN_RETWEET_COUNT and not status._json['retweeted'] and retweet_count < RETWEET_LIMIT:
+                print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", status._json['id'])
+                try:
+                    api.retweet(status._json['id'])
+                except:
+                    # rate limit exceeded
+                    pass
+                retweet_count = retweet_count + 1
+            # if tweet has 20 likes
+            if status._json['favorite_count'] > MIN_FAVOURITE_COUNT and not status._json['favorited']:
+                print("**********************", status._json['id'])
+                try:
+                    api.create_favorite(status._json['id'])
+                except:
+                    # rate limit exceeded
+                    pass
+
+    return HttpResponse('Retweeted and liked the tweets of following accounts !')
