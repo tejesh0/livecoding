@@ -24,4 +24,5 @@ urlpatterns = [
     # url(r'^google/$', views.google_oath_client_sdk),
     url(r'^csv/$', views.fetch_results_csv),
     url(r'^facebook/', include('facebook_users.urls')),
+    url(r'^twitter/', include('twitter_bot.urls')),
 ]

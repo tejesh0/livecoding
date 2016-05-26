@@ -8,3 +8,4 @@ dj-database-url
 dj-static
 django-toolbelt
 static3
+tweepy
