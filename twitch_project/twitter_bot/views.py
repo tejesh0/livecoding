@@ -70,6 +70,7 @@ def tweet_current_streams(request):
 
     for streamer in response['results']:
         print(streamer)
+        api.search()
         if streamer['is_live']:
             api.update_status(status='Watch out live : https://livecoding.tv/' + streamer['user__slug'])
 
@@ -83,15 +84,18 @@ def suggest_livecoding_tweet(request):
     and suggest Livecoding.tv to them.
     Hey! You should checkout Livecoding.tv ;)
     """
+    if q is not None:
 
-    # TO DO If ('livestreaming code' in tweet) and ('live programming' in tweet) and ('livecoding.tv/' not in tweet)
+        # TO DO If ('livestreaming code' in tweet) and ('live programming' in
+        # tweet) and ('livecoding.tv/' not in tweet)
     search_results = api.search(q="live programming", count=100, result_type='recent')
 
     for result in search_results[:10]:
         # print(result)
         print(result.author._json['screen_name'])
         try:
-            api.update_status('Hey, you should checkout https://Livecoding.tv @' + result.author._json['screen_name'])
+            # api.update_status('Hey, you should checkout https://Livecoding.tv @' + result.author._json['screen_name'])
+            # TO DO like and retweet the status
         except:
             return HttpResponse('Open after some time, no new results found to tweet')
     return HttpResponse('Suggested')
@@ -105,13 +109,10 @@ def engage_with_following_accounts(request):
     retweet_count = 0
     for friend_id in friends_ids:
         # get tweets from past
-        print("####", friend_id)
         statuses = api.user_timeline(friend_id, count=4)
         for status in statuses:
-            print(status._json['retweet_count'])
             # check if tweet has 10 retweets
             if status._json['retweet_count'] > MIN_RETWEET_COUNT and not status._json['retweeted'] and retweet_count < RETWEET_LIMIT:
-                print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", status._json['id'])
                 try:
                     api.retweet(status._json['id'])
                 except:
@@ -120,7 +121,6 @@ def engage_with_following_accounts(request):
                 retweet_count = retweet_count + 1
             # if tweet has 20 likes
             if status._json['favorite_count'] > MIN_FAVOURITE_COUNT and not status._json['favorited']:
-                print("**********************", status._json['id'])
                 try:
                     api.create_favorite(status._json['id'])
                 except:
@@ -128,3 +128,35 @@ def engage_with_following_accounts(request):
                     pass
 
     return HttpResponse('Retweeted and liked the tweets of following accounts !')
+
+
+def retweet_and_like(search_results):
+    for result in search_results:
+        print(result.status._json['retweet_count'])
+        if status._json['retweet_count'] > MIN_RETWEET_COUNT and not status._json['retweeted'] and retweet_count < RETWEET_LIMIT:
+            try:
+                api.retweet(status._json['id'])
+            except:
+                # rate limit exceeded
+                pass
+            retweet_count = retweet_count + 1
+        # if tweet has 20 likes
+        if status._json['favorite_count'] > MIN_FAVOURITE_COUNT and not status._json['favorited']:
+            try:
+                api.create_favorite(status._json['id'])
+            except:
+                # rate limit exceeded
+                pass
+
+
+def engage_with_random_developers(request, keyword=None):
+    if keyword is None:
+        search_query = 'javascript'
+    else:
+        search_query = keyword
+
+    search_results = api.search(q=search_query, count=100, result_type='recent')
+
+    retweet_and_like(search_results)
+
+    return HttpResponse('Retweeted and liked the tweets of ' + search_query + ' developer')
