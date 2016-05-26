@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'twitch_streams',
     'facebook_users',
+    'twitter_bot',
 ]
 
 MIDDLEWARE_CLASSES = [
