@@ -19,7 +19,6 @@ def fetch_members_from_group(members):
                                            'name'], is_admin=member['administrator'])
             except:
                 pass
-        print members['paging']['next']
         if members['paging']['next']:
             try:
                 response = urllib2.urlopen(members['paging']['next']).read()
@@ -28,6 +27,5 @@ def fetch_members_from_group(members):
             members = json.loads(response)
             save_members_to_db(members)
 
-    print "######", members
     save_members_to_db(members)
     logger.info("Saved streaming users to Database")
