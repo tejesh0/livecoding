@@ -63,3 +63,5 @@ target/
 
 celerybeat-schedule
 celerybeat.pid
+
+db.sqlite3
