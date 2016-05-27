@@ -2,7 +2,6 @@ from __future__ import absolute_import, print_function
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 import urllib2
-import json
 import tweepy
 
 # Create your views here.
