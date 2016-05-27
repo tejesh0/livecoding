@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'twitch_streams',
     'facebook_users',
     'twitter_bot',
+    'geo',
 ]
 
 MIDDLEWARE_CLASSES = [
