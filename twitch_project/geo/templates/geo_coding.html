@@ -69,6 +69,7 @@
         </span>
     </div>
 
+
     <script>
       // This example displays an address form, using the autocomplete feature
       // of the Google Places API to help users fill in the information.
@@ -99,6 +100,12 @@
         autocomplete.addListener('place_changed', fillInAddress);
       }
 
+      function fillInAddress() {
+        // Get the place details from the autocomplete object.
+        var place = autocomplete.getPlace();
+
+      }
+
       // Bias the autocomplete object to the user's geographical location,
       // as supplied by the browser's 'navigator.geolocation' object.
       function geolocate() {
@@ -118,6 +125,7 @@
       }
         if (window.XMLHttpRequest) { // Mozilla, Safari, IE7+ ...
             httpRequest = new XMLHttpRequest();
+            console.log(httpRequest);
         } 
 
           /* POST request code */
@@ -125,12 +133,14 @@
             httpRequest.onreadystatechange = alertContents;
             httpRequest.open('POST', url);
             httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            console.log(url, address);
             httpRequest.send('address=' + encodeURIComponent(address));
         }
 
         function alertContents() {
           if (httpRequest.readyState === XMLHttpRequest.DONE) {
             if (httpRequest.status === 200) {
+                console.log(httpRequest.responseText);
               var response = JSON.parse(httpRequest.responseText);
               alert(response.computedString);
             } else {
