@@ -26,7 +26,6 @@ def twitch_stream_users(q=None):
     for streamer in streamers:
         prev_streamers.append(streamer.name)
 
-    print prev_streamers
     # get total streamers to iterate over results
     source_total = urllib2.urlopen("https://api.twitch.tv/kraken/search/streams" + "?q=" + q)
     json_res_total = json.load(source_total)
@@ -63,7 +62,6 @@ def twitch_channel_users(q=None):
     for streamer in streamers:
         prev_streamers.append(streamer.name)
 
-    print prev_streamers
 
     # get total streamers to iterate over results
     source_total = urllib2.urlopen("https://api.twitch.tv/kraken/search/channels" + "?q=" + q)
