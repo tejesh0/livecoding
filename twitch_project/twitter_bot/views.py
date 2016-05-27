@@ -22,7 +22,7 @@ auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 api = tweepy.API(auth)
 
 MIN_RETWEET_COUNT = 30
-MIN_FAVOURITE_COUNT = 50
+MIN_FAVORITE_COUNT = 50
 RETWEET_LIMIT = 20  # per day
 
 
@@ -84,17 +84,17 @@ def suggest_livecoding_tweet(request):
     and suggest Livecoding.tv to them.
     Hey! You should checkout Livecoding.tv ;)
     """
-    if q is not None:
+    # if q is not None:
 
-        # TO DO If ('livestreaming code' in tweet) and ('live programming' in
-        # tweet) and ('livecoding.tv/' not in tweet)
+    # TO DO If ('livestreaming code' in tweet) and ('live programming' in
+    # tweet) and ('livecoding.tv/' not in tweet)
     search_results = api.search(q="live programming", count=100, result_type='recent')
 
     for result in search_results[:10]:
         # print(result)
         print(result.author._json['screen_name'])
         try:
-            # api.update_status('Hey, you should checkout https://Livecoding.tv @' + result.author._json['screen_name'])
+            api.update_status('Hey, you should checkout https://Livecoding.tv @' + result.author._json['screen_name'])
             # TO DO like and retweet the status
         except:
             return HttpResponse('Open after some time, no new results found to tweet')
@@ -114,13 +114,14 @@ def engage_with_following_accounts(request):
             # check if tweet has 10 retweets
             if status._json['retweet_count'] > MIN_RETWEET_COUNT and not status._json['retweeted'] and retweet_count < RETWEET_LIMIT:
                 try:
+                    # TO DO confirm if retweeting intended tweet
                     api.retweet(status._json['id'])
                 except:
                     # rate limit exceeded
                     pass
                 retweet_count = retweet_count + 1
             # if tweet has 20 likes
-            if status._json['favorite_count'] > MIN_FAVOURITE_COUNT and not status._json['favorited']:
+            if status._json['favorite_count'] > MIN_FAVORITE_COUNT and not status._json['favorited']:
                 try:
                     api.create_favorite(status._json['id'])
                 except:
@@ -131,8 +132,9 @@ def engage_with_following_accounts(request):
 
 
 def retweet_and_like(search_results):
-    for result in search_results:
-        print(result.status._json['retweet_count'])
+    retweet_count = 0
+    for status in search_results:
+        print(status._json['retweet_count'])
         if status._json['retweet_count'] > MIN_RETWEET_COUNT and not status._json['retweeted'] and retweet_count < RETWEET_LIMIT:
             try:
                 api.retweet(status._json['id'])
@@ -141,7 +143,7 @@ def retweet_and_like(search_results):
                 pass
             retweet_count = retweet_count + 1
         # if tweet has 20 likes
-        if status._json['favorite_count'] > MIN_FAVOURITE_COUNT and not status._json['favorited']:
+        if status._json['favorite_count'] > MIN_FAVORITE_COUNT and not status._json['favorited']:
             try:
                 api.create_favorite(status._json['id'])
             except:
@@ -160,3 +162,26 @@ def engage_with_random_developers(request, keyword=None):
     retweet_and_like(search_results)
 
     return HttpResponse('Retweeted and liked the tweets of ' + search_query + ' developer')
+
+
+def like_livecoding_tweets(request):
+    search_results = api.search(q='@livecodingtv')
+
+    data = []
+    tweet_count = 0
+    for status in search_results:
+        tweet_info = {}
+        # just making sure it is a tweet that had been liked by others (>4)
+        if not status.favorited:
+            tweet_info['tweet_id'] = status.id
+            tweet_info['favorites'] = status.favorite_count
+            tweet_info['text'] = status.text
+            tweet_info['url'] = 'https://twitter.com/statuses/' + str(status.id)
+            data.append(tweet_info)
+            try:
+                api.create_favorite(status.id)
+            except:
+                # rate limit exceeded
+                pass
+        tweet_count = tweet_count + 1
+    return render(request, 'liked_livecoding_tweets.html', context={'favorited_tweets': data})

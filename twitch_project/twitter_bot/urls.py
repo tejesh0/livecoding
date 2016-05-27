@@ -8,5 +8,7 @@ urlpatterns = [
     url(r'^tweet-streamers$', views.tweet_current_streams),
     url(r'^suggest$', views.suggest_livecoding_tweet),
     url(r'^engage$', views.engage_with_following_accounts),
-    url(r'^engage/(?P<keyword>[\d]+)$$', views.engage_with_random_developers),
+    url(r'^engage/(?P<keyword>[\w]+)$$', views.engage_with_random_developers),
+    url(r'^favorite$', views.like_livecoding_tweets),
+
 ]

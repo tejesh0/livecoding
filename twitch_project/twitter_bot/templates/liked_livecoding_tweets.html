@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Twitter Bot Favourited Tweets</title>
+</head>
+<body>
+    <div>
+        <h4> The following tweets have been auto favourited by twitter bot </h4>
+        <p> Please review them and unfavourite manually if necessary </p>
+        {% for tweet in favorited_tweets %}
+            <ul>
+                <p>url      :{{tweet.url}} </p>
+                <p>tweet_id      :{{tweet.tweet_id}}</p>
+                <p>favorites      :{{tweet.favorites}}</p>
+                <p>text      :{{tweet.text}}</p>
+            </ul>
+            <a href={{tweet.url}} target="_blank"> Click Here to go to tweet</a>
+        {% endfor %}
+    </div>
+</body>
+</html>
