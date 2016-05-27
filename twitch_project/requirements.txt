@@ -1,11 +1,8 @@
 pydrive
 celery
-django
 redis
 gunicorn
-Django
 dj-database-url
 dj-static
-django-toolbelt
 static3
 tweepy
