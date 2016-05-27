@@ -172,7 +172,7 @@ def like_livecoding_tweets(request):
     for status in search_results:
         tweet_info = {}
         # just making sure it is a tweet that had been liked by others (>4)
-        if not status.favorited:
+        if not status.favorited and tweet_count % 4 == 0:
             tweet_info['tweet_id'] = status.id
             tweet_info['favorites'] = status.favorite_count
             tweet_info['text'] = status.text
