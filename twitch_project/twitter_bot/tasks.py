@@ -8,7 +8,7 @@ logger = get_task_logger(__name__)
 
 
 @periodic_task(
-    run_every=(crontab()),
+    run_every=(crontab(minute='*/15')),
     name="like_and_retweet_livecoding_mentions",
     ignore_result=True
 )
@@ -33,7 +33,7 @@ def like_and_retweet_livecoding_mentions():
 
 
 @periodic_task(
-    run_every=(crontab()),
+    run_every=(crontab(minute='*/15')),
     name="like_and_retweet_livecoding_mentions",
     ignore_result=True
 )
@@ -67,7 +67,7 @@ def retweet_and_like_following_account_tweets():
 
 
 @periodic_task(
-    run_every=(crontab()),
+    run_every=(crontab(minute='*/15')),
     name="suggest_livecoding_by_keywords",
     ignore_result=True
 )
