@@ -101,7 +101,7 @@ def suggest_livecoding_tweet(request):
     return HttpResponse('Suggested')
 
 
-def engage_with_following_accounts(request):
+def retweet_and_like_following_account_tweets(request):
 
     # get following accounts
     friends_ids = api.friends_ids(screen_name='tejesh95')
@@ -151,17 +151,22 @@ def retweet_and_like(search_results):
                 pass
 
 
-def engage_with_random_developers(request, keyword=None):
-    if keyword is None:
-        search_query = 'javascript'
+def retweet_and_like_random_account_tweets(request):
+    if request.method == 'POST':
+        print(request.POST.get('keyword'))
+        if request.POST.get('keyword') is None:
+            return render(request, 'retweet_and_like_random_account_tweets.html')
+        else:
+            search_query = request.POST.get('keyword')
+
+        print(search_query)
+        search_results = api.search(q=search_query, count=50, result_type='recent')
+
+        retweet_and_like(search_results)
+
+        return render(request, 'retweet_and_like_random_account_tweets.html', context={'search_results': search_results})
     else:
-        search_query = keyword
-
-    search_results = api.search(q=search_query, count=100, result_type='recent')
-
-    retweet_and_like(search_results)
-
-    return HttpResponse('Retweeted and liked the tweets of ' + search_query + ' developer')
+        return render(request, 'retweet_and_like_random_account_tweets.html')
 
 
 def like_livecoding_tweets(request):

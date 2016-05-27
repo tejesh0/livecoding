@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>retween_and_like_random_account_tweets</title>
+</head>
+<body>
+    <form action='/twitter/retweet-random' method='POST'>
+        {% csrf_token %}
+        
+        <input type='text' placeholder="Enter twitter search keywords" name='keyword'/>
+        
+        <input type='submit' value="Post retweets and likes">
+    </form>
+
+
+    {% for result in search_results %}
+        <p>{{result.text}}</p>
+    {% endfor %}
+</body>
+</html>
