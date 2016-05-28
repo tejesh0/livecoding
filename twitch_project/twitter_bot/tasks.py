@@ -3,12 +3,13 @@ from celery.utils.log import get_task_logger
 from celery.task.schedules import crontab
 from .models import LivecodingHandle, KeywordSearchSuggest
 from .views import api
+from django.utils.http import urlquote
 
 logger = get_task_logger(__name__)
 
 
 @periodic_task(
-    run_every=(crontab(minute='*/15')),
+    run_every=(crontab(minute='*/20')),
     name="like_and_retweet_livecoding_mentions",
     ignore_result=True
 )
@@ -33,7 +34,7 @@ def like_and_retweet_livecoding_mentions():
 
 
 @periodic_task(
-    run_every=(crontab(minute='*/15')),
+    run_every=(crontab(minute='*/20')),
     name="like_and_retweet_livecoding_mentions",
     ignore_result=True
 )
@@ -67,7 +68,7 @@ def retweet_and_like_following_account_tweets():
 
 
 @periodic_task(
-    run_every=(crontab(minute='*/15')),
+    run_every=(crontab(minute='*/20')),
     name="suggest_livecoding_by_keywords",
     ignore_result=True
 )
@@ -77,17 +78,20 @@ def suggest_livecoding_by_keywords():
     for keyword in keyword_objects:
 
         q = keyword.include_words + ' -' + keyword.exclude_words
-        search_results = api.search(q=q, count=10, result_type='recent')
+        url_encoded_q = urlquote(q)
+        search_results = api.search(q=url_encoded_q, count=10, result_type='recent')
 
         tweet_counter = 0
 
         for status in search_results:
-            if not status.favorited and tweet_counter % 4 == 0:
-                api.create_favorite(status.id)
-
-            if not status.retweeted and tweet_counter % 3 == 0:
-                api.retweet(status.id)
+            if not status.favorited and tweet_counter % 3 == 0:
+                try:
+                    api.create_favorite(status.id)
+                    api.update_status('Watch live programming @NowLivecodingtv @' +
+                                      status.user.screen_name, status.id)
+                except Exception, e:
+                    print(e)
 
             tweet_counter += 1
 
-        logger.info("suggest livecoding by keywords")
+        print('Hey you should checkout @NowLivecodingtv @' + status.user.screen_name, status.id)

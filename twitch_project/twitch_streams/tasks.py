@@ -80,7 +80,7 @@ def twitch_channel_users(q=None):
 
 
 @periodic_task(
-    run_every=(crontab()),
+    run_every=(crontab(minute='*/15')),
     name="fetch_users_from_twitch_stream",
     ignore_result=True
 )
@@ -91,7 +91,7 @@ def fetch_users_from_twitch_stream(q=None):
 
 
 @periodic_task(
-    run_every=(crontab()),
+    run_every=(crontab(minute='*/15')),
     name="fetch_users_from_twitch_channels",
     ignore_result=True
 )

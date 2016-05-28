@@ -83,6 +83,14 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': 'livecoding',
+    #     'USER': 'livecodinguser',
+    #     'PASSWORD': 'livecoding1@34',
+    #     'HOST': 'localhost',
+    #     'PORT': '',
+    # }
 }
 
 
@@ -124,3 +132,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), 'twitch_project/static/')
+
+# CREATE DATABASE livecoding;
+# CREATE USER livecodinguser WITH PASSWORD 'livecoding1@34'

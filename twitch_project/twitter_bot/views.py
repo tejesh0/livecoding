@@ -111,7 +111,7 @@ def retweet_and_like_following_account_tweets(request):
         statuses = api.user_timeline(friend_id, count=4)
         for status in statuses:
             # check if tweet has 10 retweets
-            if status._json['retweet_count'] > MIN_RETWEET_COUNT and not status._json['retweeted'] and retweet_count < RETWEET_LIMIT:
+            if status._json['retweet_count'] > MIN_RETWEET_COUNT and not status._json['retweeted']:
                 try:
                     # TO DO confirm if retweeting intended tweet
                     api.retweet(status._json['id'])
