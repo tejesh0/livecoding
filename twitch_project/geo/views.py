@@ -15,7 +15,6 @@ def fetch_location(request):
             try:
                 location = geolocator.geocode(request.POST.get('address'))
             except:
-                Geo.objects.create(address=location.address)
                 return HttpResponse('There is some problem decoding to lat long, Please try again!')
             Geo.objects.create(latitude=location.latitude, longitude=location.longitude, address=location.address)
         return HttpResponse("Check console for fetched address ")

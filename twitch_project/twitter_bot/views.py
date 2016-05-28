@@ -24,6 +24,9 @@ MIN_RETWEET_COUNT = 30
 MIN_FAVORITE_COUNT = 50
 RETWEET_LIMIT = 20  # per day
 
+BLACKLISTED_WORDS = ['penis', 'drugs', 'sex', 'race', 'kiss']
+
+
 
 def test_tweept_api(request):
 
@@ -111,21 +114,27 @@ def retweet_and_like_following_account_tweets(request):
         statuses = api.user_timeline(friend_id, count=4)
         for status in statuses:
             # check if tweet has 10 retweets
-            if status._json['retweet_count'] > MIN_RETWEET_COUNT and not status._json['retweeted']:
-                try:
-                    # TO DO confirm if retweeting intended tweet
-                    api.retweet(status._json['id'])
-                except:
-                    # rate limit exceeded
-                    pass
-                retweet_count = retweet_count + 1
-            # if tweet has 20 likes
-            if status._json['favorite_count'] > MIN_FAVORITE_COUNT and not status._json['favorited']:
-                try:
-                    api.create_favorite(status._json['id'])
-                except:
-                    # rate limit exceeded
-                    pass
+            flag = True
+            for word in status.text.split(' '):
+                if word in BLACKLISTED_WORDS:
+                    flag = False
+                    break
+            if flag:
+                if status._json['retweet_count'] > MIN_RETWEET_COUNT and not status._json['retweeted']:
+                    try:
+                        # TO DO confirm if retweeting intended tweet
+                        api.retweet(status._json['id'])
+                    except:
+                        # rate limit exceeded
+                        pass
+                    retweet_count = retweet_count + 1
+                # if tweet has 20 likes
+                if status._json['favorite_count'] > MIN_FAVORITE_COUNT and not status._json['favorited']:
+                    try:
+                        api.create_favorite(status._json['id'])
+                    except:
+                        # rate limit exceeded
+                        pass
 
     return HttpResponse('Retweeted and liked the tweets of following accounts !')
 
