@@ -94,4 +94,4 @@ def suggest_livecoding_by_keywords():
 
             tweet_counter += 1
 
-        print('Hey you should checkout @NowLivecodingtv @' + status.user.screen_name, status.id)
+        print('Watch live programming @NowLivecodingtv @' + status.user.screen_name, status.id)
