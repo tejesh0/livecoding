@@ -186,7 +186,8 @@ def retweet_and_like_random_account_tweets(request):
             search_query = request.POST.get('keyword')
 
         print(search_query)
-        search_results = api.search(q=search_query, count=50, result_type='recent')
+        search_results = api.search(q=search_query, count=50, result_type='recent',
+                                    geocode="37.0902, 95.7129, 10000mi")
 
         retweet_and_like(search_results)
 

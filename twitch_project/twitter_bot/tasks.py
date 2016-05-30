@@ -16,7 +16,7 @@ def like_and_retweet_livecoding_mentions():
 
     for result in LivecodingHandle.objects.all():
         search_results = api.search(q=result.keyword, count=100,
-                                    since_id=result.last_tweet_id, geocode="37.0902, 95.7129, 10000mi")
+                                    since_id=result.last_tweet_id)
 
         data = []
         tweet_counter = 0
@@ -95,7 +95,8 @@ def suggest_livecoding_by_keywords():
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         print(q)
         search_results = api.search(q=q, since_id=keyword.last_tweet_id, count=100,
-                                    result_type='recent', geocode="37.0902, 95.7129, 10000mi")
+                                    result_type='recent')
+        print("#############LENGTH OF RESULTS", len(search_results))
         for status in search_results:
 
             flag = True
