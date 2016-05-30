@@ -5,10 +5,17 @@ import urllib2
 import tweepy
 
 # Create your views here.
-CONSUMER_KEY = 'OxcxPEtqcmDkXxKCWS2oZ0Yhh'
-CONSUMER_SECRET = 'xJdCnVqfM1O6NROkEbQdmqVDslvIDp3OSTDMyhnrTj2PRzauua'
-ACCESS_TOKEN = '2587698888-dtnflvcSem75KjKXFg8h7nwwNWNcQrbwm6xHMRT'
-ACCESS_TOKEN_SECRET = 'RJZrL0TI6s9S9cPg09wgbZjNUBxzcLGVCspwazGU7Ss4L'
+# CONSUMER_KEY = 'OxcxPEtqcmDkXxKCWS2oZ0Yhh'
+# CONSUMER_SECRET = 'xJdCnVqfM1O6NROkEbQdmqVDslvIDp3OSTDMyhnrTj2PRzauua'
+# ACCESS_TOKEN = '2587698888-dtnflvcSem75KjKXFg8h7nwwNWNcQrbwm6xHMRT'
+# ACCESS_TOKEN_SECRET = 'RJZrL0TI6s9S9cPg09wgbZjNUBxzcLGVCspwazGU7Ss4L'
+
+ACCESS_TOKEN = "4415348663-Zuk3qz3CAQdsrdbcIyUe8UnIcFq3SvMrla9ooZV"
+ACCESS_TOKEN_SECRET = "1StiYbP497HOzqXX0c8GVqxoZu0qNceAN0HHQPyCPZRXE"
+CONSUMER_SECRET = "0Q2uAPUZ9Dny9SKeHFQ684eGJsI4ZMAP5htJ2Af91z2ygRIdx9"
+CONSUMER_KEY = "ur9NcowJYOBXKgd45XPIFADmc"
+HOURS = 24
+SCREEN_NAME = 'NowLivecodingtv'
 
 # https://www.livecoding.tv/developer/applications/137/
 LIVECODING_KEY = 'Kn1zdoDZGRkcTQZW5NuA1CQ4nkjEYezmZ72knmRA'
@@ -21,11 +28,10 @@ auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 api = tweepy.API(auth)
 
 MIN_RETWEET_COUNT = 30
-MIN_FAVORITE_COUNT = 50
+MIN_FAVORITE_COUNT = 40
 RETWEET_LIMIT = 20  # per day
 
 BLACKLISTED_WORDS = ['penis', 'drugs', 'sex', 'race', 'kiss']
-
 
 
 def test_tweept_api(request):
@@ -106,7 +112,7 @@ def suggest_livecoding_tweet(request):
 def retweet_and_like_following_account_tweets(request):
 
     # get following accounts
-    friends_ids = api.friends_ids(screen_name='tejesh95')
+    friends_ids = api.friends_ids(screen_name=SCREEN_NAME)
 
     retweet_count = 0
     for friend_id in friends_ids:
@@ -142,21 +148,33 @@ def retweet_and_like_following_account_tweets(request):
 def retweet_and_like(search_results):
     retweet_count = 0
     for status in search_results:
-        print(status._json['retweet_count'])
-        if status._json['retweet_count'] > MIN_RETWEET_COUNT and not status._json['retweeted'] and retweet_count < RETWEET_LIMIT:
-            try:
-                api.retweet(status._json['id'])
-            except:
-                # rate limit exceeded
-                pass
-            retweet_count = retweet_count + 1
-        # if tweet has 20 likes
-        if status._json['favorite_count'] > MIN_FAVORITE_COUNT and not status._json['favorited']:
-            try:
-                api.create_favorite(status._json['id'])
-            except:
-                # rate limit exceeded
-                pass
+        flag = True
+        for word in status.text.split(' '):
+            if word in BLACKLISTED_WORDS:
+                flag = False
+                break
+        if flag:
+            print(status.retweet_count, status.retweeted, status.favorite_count, status.favorited)
+            if status.retweet_count > 5 and not status.retweeted:
+                # try:
+                print("###", status.id, status)
+                try:
+                    api.retweet(status.id)
+                except Exception, e:
+                    print(e)
+
+                print("####")
+                # except:
+                #     # rate limit exceeded
+                #     pass
+                retweet_count = retweet_count + 1
+            # if tweet has 20 likes
+            if status.favorite_count > 5 and not status.favorited:
+                # try:
+                api.create_favorite(status.id)
+                # except:
+                #     # rate limit exceeded
+                #     pass
 
 
 def retweet_and_like_random_account_tweets(request):
@@ -184,17 +202,23 @@ def like_livecoding_tweets(request):
     tweet_count = 0
     for status in search_results:
         tweet_info = {}
-        # just making sure it is a tweet that had been liked by others (>4)
-        if not status.favorited and tweet_count % 4 == 0:
-            tweet_info['tweet_id'] = status.id
-            tweet_info['favorites'] = status.favorite_count
-            tweet_info['text'] = status.text
-            tweet_info['url'] = 'https://twitter.com/statuses/' + str(status.id)
-            data.append(tweet_info)
-            try:
-                api.create_favorite(status.id)
-            except:
-                # rate limit exceeded
-                pass
-        tweet_count = tweet_count + 1
+        flag = True
+        for word in status.text.split(' '):
+            if word in BLACKLISTED_WORDS:
+                flag = False
+                break
+        if flag:
+            # just making sure it is a tweet that had been liked by others (>4)
+            if not status.favorited and tweet_count % 4 == 0:
+                tweet_info['tweet_id'] = status.id
+                tweet_info['favorites'] = status.favorite_count
+                tweet_info['text'] = status.text
+                tweet_info['url'] = 'https://twitter.com/statuses/' + str(status.id)
+                data.append(tweet_info)
+                try:
+                    api.create_favorite(status.id)
+                except:
+                    # rate limit exceeded
+                    pass
+            tweet_count = tweet_count + 1
     return render(request, 'liked_livecoding_tweets.html', context={'favorited_tweets': data})
