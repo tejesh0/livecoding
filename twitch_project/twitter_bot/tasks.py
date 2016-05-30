@@ -95,7 +95,7 @@ def suggest_livecoding_by_keywords():
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         print(q)
         search_results = api.search(q=q, since_id=keyword.last_tweet_id, count=100,
-                                    result_type='recent', geocode="37.0902, 95.7129, 10000mi')
+                                    result_type='recent', geocode="37.0902, 95.7129, 10000mi")
         for status in search_results:
 
             flag = True
