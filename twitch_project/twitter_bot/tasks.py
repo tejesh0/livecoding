@@ -15,7 +15,8 @@ logger = get_task_logger(__name__)
 def like_and_retweet_livecoding_mentions():
 
     for result in LivecodingHandle.objects.all():
-        search_results = api.search(q=result.keyword, count=100, since_id=result.last_tweet_id, geocode="37.0902, 95.7129, 10000mi")
+        search_results = api.search(q=result.keyword, count=100,
+                                    since_id=result.last_tweet_id, geocode="37.0902, 95.7129, 10000mi")
 
         data = []
         tweet_counter = 0
@@ -93,7 +94,8 @@ def suggest_livecoding_by_keywords():
             q = keyword.include_words
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         print(q)
-        search_results = api.search(q=q, since_id=keyword.last_tweet_id, count=100, result_type='recent, geocode="37.0902, 95.7129, 10000mi')
+        search_results = api.search(q=q, since_id=keyword.last_tweet_id, count=100,
+                                    result_type='recent', geocode="37.0902, 95.7129, 10000mi')
         for status in search_results:
 
             flag = True
