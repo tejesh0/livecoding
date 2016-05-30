@@ -25,7 +25,7 @@ LIVECODING_REDIRECT_URI = 'http://localhost:5000' + '/twitter/livecoding-redirec
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.secure = True
 auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
-api = tweepy.API(auth)
+api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
 MIN_RETWEET_COUNT = 30
 MIN_FAVORITE_COUNT = 40
@@ -96,16 +96,16 @@ def suggest_livecoding_tweet(request):
 
     # TO DO If ('livestreaming code' in tweet) and ('live programming' in
     # tweet) and ('livecoding.tv/' not in tweet)
-    search_results = api.search(q="live programming", count=100, result_type='recent')
+    # search_results = api.search(q="live programming", count=100, result_type='recent')
 
-    for result in search_results[:10]:
-        # print(result)
-        print(result.author._json['screen_name'])
-        try:
-            api.update_status('Hey, you should checkout https://Livecoding.tv @' + result.author._json['screen_name'])
-            # TO DO like and retweet the status
-        except:
-            return HttpResponse('Open after some time, no new results found to tweet')
+    # for result in search_results[:10]:
+    #     # print(result)
+    #     print(result.author._json['screen_name'])
+    #     try:
+    #         # api.update_status('Hey, you should checkout https://Livecoding.tv @' + result.author._json['screen_name'])
+    #         # TO DO like and retweet the status
+    #     except:
+    #         return HttpResponse('Open after some time, no new results found to tweet')
     return HttpResponse('Suggested')
 
 

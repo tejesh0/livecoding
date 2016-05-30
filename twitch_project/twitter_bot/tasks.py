@@ -86,14 +86,15 @@ def retweet_and_like_following_account_tweets():
 def suggest_livecoding_by_keywords():
     keyword_objects = KeywordSearchSuggest.objects.all()
 
-    print('STARTED')
     for keyword in keyword_objects:
         if keyword.exclude_words:
             q = keyword.include_words + ' -' + keyword.exclude_words
         else:
             q = keyword.include_words
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print(q)
         search_results = api.search(q=q, since_id=keyword.last_tweet_id, count=100, result_type='recent')
-
+        print(search_results)
         for status in search_results:
 
             flag = True
@@ -103,7 +104,7 @@ def suggest_livecoding_by_keywords():
                     break
             if flag:
                 print(status.favorite_count)
-                if status.favorite_count > keyword.minimum_likes:
+                if status.favorite_count >= keyword.minimum_likes:
                     try:
                         api.create_favorite(status.id)
                     except Exception as e:
@@ -112,7 +113,7 @@ def suggest_livecoding_by_keywords():
                     keyword.last_tweet_id = status.id
                     keyword.save()
 
-                if status.retweet_count > keyword.minimum_retweets:
+                if status.retweet_count >= keyword.minimum_retweets:
                     try:
                         api.retweet(status.id)
                     except Exception as e:
