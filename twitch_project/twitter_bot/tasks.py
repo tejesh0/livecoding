@@ -6,7 +6,9 @@ from .views import api, BLACKLISTED_WORDS
 
 logger = get_task_logger(__name__)
 
-PROGRAMMING_RELATED_WORDS = ['gist', 'programming', 'nodejs', '#python', 'coding', 'dev', 'github', 'html']
+# TO DO create interface
+PROGRAMMING_RELATED_WORDS = ['gist', 'programming', 'nodejs',
+                             '#learnpython', 'coding', 'dev', 'github', 'html', 'swift', 'gamedev']
 
 
 @periodic_task(
@@ -85,7 +87,7 @@ def retweet_and_like_following_account_tweets():
 
 
 @periodic_task(
-    run_every=(crontab(minute='*/1')),
+    run_every=(crontab(minute='*/30')),
     name="suggest_livecoding_by_keywords",
     ignore_result=True
 )

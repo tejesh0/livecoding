@@ -3,6 +3,8 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 import urllib2
 import tweepy
+import requests
+import json
 
 # Create your views here.
 # CONSUMER_KEY = 'OxcxPEtqcmDkXxKCWS2oZ0Yhh'
@@ -21,6 +23,12 @@ SCREEN_NAME = 'NowLivecodingtv'
 LIVECODING_KEY = 'Kn1zdoDZGRkcTQZW5NuA1CQ4nkjEYezmZ72knmRA'
 LIVECODING_SECRET = '8kaCWGAWEFhUrh0vpW4oeQt2JdRehxQL3pNLAl9A3XFRlYTF0GxMvE5hcU9e2t8vHL4cBGTVOfmus5jAllwTh1CAzRS95mwI2F8I11c9xeFzAcXih4sPLiITCdUAisGz'
 LIVECODING_REDIRECT_URI = 'http://localhost:5000' + '/twitter/livecoding-redirect'
+MY_CODE = 'qImSS03cdLm7CDeXDlZBoQ9ZL62bS8'
+
+# {"access_token": "GAp8cjFJ0QfcU82ZvKmlE8BNZJjNoS",
+# "token_type": "Bearer", "expires_in": 36000,
+# "refresh_token": "pcyIJzc1HK1YJ0CXHqS1BJ45p83OOj", "scope": "read"}
+
 
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.secure = True
@@ -31,56 +39,52 @@ MIN_RETWEET_COUNT = 30
 MIN_FAVORITE_COUNT = 40
 RETWEET_LIMIT = 20  # per day
 
+# TO DO create interface
+# BLACKLISTED_WORDS = [word.rsplit() for word in open('black_listed_words.txt', 'r')]
 BLACKLISTED_WORDS = ['penis', 'drugs', 'sex', 'race', 'kiss']
 
 
-def test_tweept_api(request):
-
-    # If the authentication was successful, you should
-    # see the name of the account print out
-    print(api.me().name)
-
-    # If the application settings are set for "Read and Write" then
-    # this line should tweet out the message to your account's
-    # timeline. The "Read and Write" setting is on https://dev.twitter.com/apps
-    # api.update_status(status='Updating using OAuth authentication via Tweepy!')
-
-    return HttpResponse('Redirect successfully !')
-
-
 def livecoding_oath(request):
-    auth_end_point = 'https://www.livecoding.tv/o/authorize/?scope=read&state=' + LIVECODING_SECRET + \
+    auth_end_point = 'https://www.livecoding.tv/o/authorize/?scope=read&state=' + '46c3c39d-512a-4bd0-8d59-63d7c9732180' + \
         '&redirect_uri=' + LIVECODING_REDIRECT_URI + '&response_type=code&client_id=' + LIVECODING_KEY
     print(auth_end_point)
-    try:
-        res = urllib2.urlopen(auth_end_point)
-    except urllib2.URLError as e:
-        print(e)
-        return HttpResponse('livecoding authorisation failed!')
-    print(res)
-    return HttpResponseRedirect(res.read())
+
+    return HttpResponseRedirect(auth_end_point)
 
 
 def livecoding_redirect_view(request):
-    print(request.GET)
 
-    return HttpResponse(' Fetched access token')
+    code = request.GET.get('code')
+    if code is None:
+        return HttpResponse("code param is empty/not found")
+    try:
+        url = "https://www.livecoding.tv/o/token/"
+        data = dict(code=code, grant_type='authorization_code', redirect_uri=LIVECODING_REDIRECT_URI,
+                    client_id=LIVECODING_KEY, client_secret=LIVECODING_SECRET)
+        response = requests.post(url, data=data)
+    except urllib2.URLError as e:
+        print(e)
+        return HttpResponse("Failed to make POST request to fetch token")
+
+    return HttpResponse(response.content)
 
 
 def tweet_current_streams(request):
     try:
-        response = urllib2.urlopen('https://www.livecoding.tv/api/livestreams/?limit=10&offset=0')
-        print(response)
-        response = response.read()
+        headers = {"Authorization": "Bearer GAp8cjFJ0QfcU82ZvKmlE8BNZJjNoS"}
+        response = requests.get('https://www.livecoding.tv/api/livestreams/onair/', headers=headers)
+
+        # return HttpResponse(response.content)
     except urllib2.URLError as e:
         print(e)
         return HttpResponse('Try Agian')
 
-    for streamer in response['results']:
-        print(streamer)
-        api.search()
+    results = json.loads(response.content)
+    for streamer in results['results']:
+        # api.search()
         if streamer['is_live']:
-            api.update_status(status='Watch out live : https://livecoding.tv/' + streamer['user__slug'])
+            print("LIVEEEE")
+            # api.update_status(status='Watch out live : https://livecoding.tv/' + streamer['user__slug'])
 
     return HttpResponse('Current Streamers are tweet is made successfully !')
 
@@ -126,18 +130,18 @@ def retweet_and_like_following_account_tweets(request):
                     flag = False
                     break
             if flag:
-                if status._json['retweet_count'] > MIN_RETWEET_COUNT and not status._json['retweeted']:
+                if status.retweet_count > MIN_RETWEET_COUNT and not status.retweeted:
                     try:
                         # TO DO confirm if retweeting intended tweet
-                        api.retweet(status._json['id'])
+                        api.retweet(status.id)
                     except:
                         # rate limit exceeded
                         pass
                     retweet_count = retweet_count + 1
                 # if tweet has 20 likes
-                if status._json['favorite_count'] > MIN_FAVORITE_COUNT and not status._json['favorited']:
+                if status.favorite_count > MIN_FAVORITE_COUNT and not status.favorited:
                     try:
-                        api.create_favorite(status._json['id'])
+                        api.create_favorite(status.id)
                     except:
                         # rate limit exceeded
                         pass
@@ -157,24 +161,19 @@ def retweet_and_like(search_results):
             print(status.retweet_count, status.retweeted, status.favorite_count, status.favorited)
             if status.retweet_count > 5 and not status.retweeted:
                 # try:
-                print("###", status.id, status)
+                print("###", status.id)
                 try:
                     api.retweet(status.id)
                 except Exception, e:
                     print(e)
 
-                print("####")
-                # except:
-                #     # rate limit exceeded
-                #     pass
                 retweet_count = retweet_count + 1
             # if tweet has 20 likes
             if status.favorite_count > 5 and not status.favorited:
-                # try:
-                api.create_favorite(status.id)
-                # except:
-                #     # rate limit exceeded
-                #     pass
+                try:
+                    api.create_favorite(status.id)
+                except Exception, e:
+                    print(e)
 
 
 def retweet_and_like_random_account_tweets(request):
