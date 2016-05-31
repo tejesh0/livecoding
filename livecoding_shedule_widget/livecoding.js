@@ -5,7 +5,13 @@ var livecoding = function() {
     };
 
     function publicRender() {
-        console.log('public render loaded');
+        livecodingDiv = document.createElement('div');
+
+        livecodingDiv.id = "livecoding";
+
+        livecodingDiv.innerHTML = '<p>' + schedule.topic + ' : ' + schedule.title + '---' + schedule.time + '</p>';
+
+        document.getElementsByTagName('body')[0].appendChild(livecodingDiv);
     }
 
 

@@ -6,6 +6,8 @@ from .views import api, BLACKLISTED_WORDS
 
 logger = get_task_logger(__name__)
 
+PROGRAMMING_RELATED_WORDS = ['gist', 'programming', 'nodejs', '#python', 'coding', 'dev', 'github', 'html']
+
 
 @periodic_task(
     run_every=(crontab(minute='*/15')),
@@ -34,6 +36,7 @@ def like_and_retweet_livecoding_mentions():
                         api.create_favorite(status.id)
                         result.last_tweet_id = status.id
                         result.save()
+                        logger.info('favorited tweet id : ' + status.id)
                     except Exception as e:
                         # rate limit exceeded
                         print(e)
@@ -59,24 +62,26 @@ def retweet_and_like_following_account_tweets():
             # check if tweet has 40 retweets
             flag = True
             for word in status.text.split(' '):
-                if word in BLACKLISTED_WORDS:
+                if word in BLACKLISTED_WORDS and word not in PROGRAMMING_RELATED_WORDS:
                     flag = False
                     break
             if flag:
-                if status.retweet_count > 40:
+                if status.retweet_count > 10:
                     try:
                         # TO DO confirm if retweeting intended tweet
-                        api.retweet(status._json['id'])
+                        api.retweet(status.id)
+                        logger.info('retweeted tweet id : ' + status.id)
                     except Exception as e:
                         print(e)
                     retweet_count = retweet_count + 1
                 # if tweet has 40 likes
-                if status.favorite_count > 40:
+                if status.favorite_count > 10:
                     try:
-                        api.create_favorite(status._json['id'])
+                        api.create_favorite(status.id)
+                        logger.info('favorited tweet id : ' + status.id)
                     except Exception as e:
                         print(e)
-    logger.info("liked and retweeted one in 4 tweets from following accounts tweets")
+    logger.info("liked and retweeted from following accounts tweets")
 
 
 @periodic_task(
@@ -109,6 +114,7 @@ def suggest_livecoding_by_keywords():
                 if status.favorite_count >= keyword.minimum_likes:
                     try:
                         api.create_favorite(status.id)
+                        logger.info('favorited tweet id : ' + status.id)
                     except Exception as e:
                         print(e)
 
@@ -118,6 +124,7 @@ def suggest_livecoding_by_keywords():
                 if status.retweet_count >= keyword.minimum_retweets:
                     try:
                         api.retweet(status.id)
+                        logger.info('retweeted tweet id : ' + status.id)
                     except Exception as e:
                         print(e)
                     keyword.last_tweet_id = status.id
