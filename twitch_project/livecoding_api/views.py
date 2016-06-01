@@ -43,10 +43,10 @@ def livecoding_redirect_view(request):
     return HttpResponse(response.content)
 
 
-def tweet_current_streams(request):
+def fetch_schedules(request):
     print("@@@@@@@@@@@@@@@")
     try:
-        headers = {"Authorization": "Bearer i1ECYhX53XYbuKeHX4tS9HgKZzqDf6"}
+        headers = {"Authorization": "Bearer Co4slt8uCBr8pc5BYDrPpyL2Z99EzJ"}
         response = requests.get('https://www.livecoding.tv/api/scheduledbroadcast/?limit=5&offset=5', headers=headers)
         # print(response.content)
         return HttpResponse(response.content)
