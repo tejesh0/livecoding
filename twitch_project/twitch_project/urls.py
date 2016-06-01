@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.convert_db_to_csv),
     # url(r'^google/$', views.google_oath_client_sdk),
+    url(r'^livecoding/', include('livecoding_api.urls')),
     url(r'^csv/$', views.fetch_results_csv),
     url(r'^facebook/', include('facebook_users.urls')),
     url(r'^twitter/', include('twitter_bot.urls')),
