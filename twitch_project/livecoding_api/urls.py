@@ -5,4 +5,5 @@ urlpatterns = [
     url(r'^oath$', views.livecoding_oath),
     url(r'^redirect$', views.livecoding_redirect_view),
     url(r'^api/scheduledbroadcast/$', views.fetch_schedules),
+    url(r'^add-to-calendar/$', views.add_events_to_calendar),
 ]

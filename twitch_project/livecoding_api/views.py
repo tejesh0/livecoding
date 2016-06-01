@@ -1,4 +1,5 @@
 from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render
 import requests
 import json
 import urllib2
@@ -53,3 +54,8 @@ def fetch_schedules(request):
     except urllib2.URLError as e:
         print(e)
         return HttpResponse('Try Agian')
+
+
+def add_events_to_calendar(request):
+
+    return render(request, 'add_events_to_calendar.html')
