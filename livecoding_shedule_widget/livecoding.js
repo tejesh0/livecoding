@@ -6,8 +6,7 @@ var livecoding = function() {
 
     function template(schedules) {
         console.log(schedules);
-        console.log(typeof(schedules));
-        console.log(schedules['count']);
+        console.log(schedules.count);
 
         livecodingDiv.id = "livecoding";
 
