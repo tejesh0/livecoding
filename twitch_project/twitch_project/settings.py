@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'facebook_users',
     'twitter_bot',
     'geo',
+    'livecoding_api',
 ]
 
 MIDDLEWARE_CLASSES = [
