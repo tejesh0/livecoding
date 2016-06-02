@@ -19,7 +19,6 @@ MY_CODE = 'qImSS03cdLm7CDeXDlZBoQ9ZL62bS8'
 
 
 def livecoding_oath(request):
-    print("!!!!!!!!!")
     auth_end_point = 'https://www.livecoding.tv/o/authorize/?scope=read&state=' + '46c3c39d-512a-4bd0-8d59-63d7c9732180' + \
         '&redirect_uri=' + LIVECODING_REDIRECT_URI + '&response_type=code&client_id=' + LIVECODING_KEY
     print(auth_end_point)
@@ -45,11 +44,9 @@ def livecoding_redirect_view(request):
 
 
 def fetch_schedules(request):
-    print("@@@@@@@@@@@@@@@")
     try:
         headers = {"Authorization": "Bearer Co4slt8uCBr8pc5BYDrPpyL2Z99EzJ"}
         response = requests.get('https://www.livecoding.tv/api/scheduledbroadcast/?limit=5&offset=5', headers=headers)
-        # print(response.content)
         return HttpResponse(response.content)
     except urllib2.URLError as e:
         print(e)

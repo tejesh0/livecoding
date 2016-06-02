@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
-from .tasks import fetch_members_from_group
+from .tasks import fetch_members_from_group, fetch_facebook_page_fans
 import urllib2
 import json
 # Create your views here.
@@ -46,7 +46,6 @@ def fetch_facebook_group_members(request, group_id=None):
 
     api_end_point = HOST + '/' + VERSION + '/' + group_id + '/members' + '?access_token=' + access_token
 
-    # TO DO run this as background task
     try:
         response = urllib2.urlopen(api_end_point).read()
     except urllib2.URLError as e:
@@ -54,7 +53,21 @@ def fetch_facebook_group_members(request, group_id=None):
         return HttpResponseRedirect('/facebook/group/' + group_id)
     members = json.loads(response)
 
-    # TO DO ---> PAGINATION
-    fetch_members_from_group.delay(members)
+    fetch_members_from_group.delay(members, group_id)
 
     return HttpResponse('DONE')
+
+
+# def fetch_facebook_page_fans(request):
+#     page_id = '174179219354091'
+#     api_end_point = HOST + '/' + VERSION + '/' + page_id + '/likes' + '?access_token=' + access_token
+#     print(api_end_point)
+
+#     try:
+#         response = urllib2.urlopen(api_end_point).read()
+#     except urllib2.URLError as e:
+#         print(e.reason)
+
+#     fans = json.load(response)
+#     fetch_fans_of_page.delay(fans)
+#     return render(request, 'page_fans.html', context=None)

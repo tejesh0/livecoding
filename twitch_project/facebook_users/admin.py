@@ -5,6 +5,6 @@ from .models import GroupMember
 
 
 class GroupMemberAdmin(admin.ModelAdmin):
-    list_display = ('profile_id', 'name', 'is_admin')
+    list_display = ('profile_id', 'name', 'is_admin', 'group_id')
 
 admin.site.register(GroupMember, GroupMemberAdmin)
