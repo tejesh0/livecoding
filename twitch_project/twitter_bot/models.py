@@ -18,3 +18,14 @@ class KeywordSearchSuggest(models.Model):
     minimum_retweets = models.PositiveSmallIntegerField(default=10)
     minimum_likes = models.PositiveSmallIntegerField(default=20)
     last_tweet_id = models.CharField(max_length=100)
+
+
+class Credentials(models.Model):
+    access_token = models.CharField(max_length=240)
+    access_token_secret = models.CharField(max_length=240)
+    consumer_secret = models.CharField(max_length=240)
+    consumer_key = models.CharField(max_length=240)
+
+    class Meta:
+        verbose_name = 'credentials'
+        verbose_name_plural = 'credentials'
