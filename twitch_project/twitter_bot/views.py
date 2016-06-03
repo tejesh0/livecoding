@@ -1,11 +1,8 @@
 from __future__ import absolute_import, print_function
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from .models import Credentials
-import urllib2
 import tweepy
-import requests
-import json
 
 # Create your views here.
 # CONSUMER_KEY = 'OxcxPEtqcmDkXxKCWS2oZ0Yhh'
@@ -13,10 +10,11 @@ import json
 # ACCESS_TOKEN = '2587698888-dtnflvcSem75KjKXFg8h7nwwNWNcQrbwm6xHMRT'
 # ACCESS_TOKEN_SECRET = 'RJZrL0TI6s9S9cPg09wgbZjNUBxzcLGVCspwazGU7Ss4L'
 
-ACCESS_TOKEN = "4415348663-Zuk3qz3CAQdsrdbcIyUe8UnIcFq3SvMrla9ooZV"
-ACCESS_TOKEN_SECRET = "1StiYbP497HOzqXX0c8GVqxoZu0qNceAN0HHQPyCPZRXE"
-CONSUMER_SECRET = "0Q2uAPUZ9Dny9SKeHFQ684eGJsI4ZMAP5htJ2Af91z2ygRIdx9"
-CONSUMER_KEY = "ur9NcowJYOBXKgd45XPIFADmc"
+credentials = Credentials.objects.all()[0]
+ACCESS_TOKEN = credentials.access_token
+ACCESS_TOKEN_SECRET = credentials.access_token_secret
+CONSUMER_SECRET = credentials.consumer_secret
+CONSUMER_KEY = credentials.consumer_key
 HOURS = 24
 SCREEN_NAME = 'NowLivecodingtv'
 
