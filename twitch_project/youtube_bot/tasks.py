@@ -65,7 +65,7 @@ def youtube_search(options):
 
 
 @periodic_task(
-    run_every=(crontab(minute='*/1')),
+    run_every=(crontab(minute=0, hour=0)),
     name="fetch_youtube_search_results",
     ignore_result=True
 )
