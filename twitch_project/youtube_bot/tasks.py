@@ -1,6 +1,5 @@
-from celery.decorators import task
 from celery.utils.log import get_task_logger
-# from .models import YoutubeSearchTerm, YoutbubeData
+from .models import YoutubeSearchFilters, YoutubeData
 from apiclient.discovery import build
 from celery.decorators import periodic_task
 from celery.task.schedules import crontab
@@ -27,7 +26,7 @@ def youtube_search(options):
         # locationRadius=options.location_radius,
         order='date',
         part="id,snippet",
-        maxResults=2
+        maxResults=5
     ).execute()
 
     print(search_response['items'])
@@ -43,13 +42,26 @@ def youtube_search(options):
             id=item['snippet']['channelId'],
         ).execute()
 
-        print(channel_response['items'])
+        # print(channel_response['items'])
         for response in channel_response['items']:
-            print(response)
-            print(response['statistics']['commentCount'], response['statistics']['viewCount'], response['statistics']['videoCount'], response['statistics']['subscriberCount'])
+
+            youtube_data = YoutubeData(channel_id=item['snippet']['channelId'])
+
+            youtube_data.comment_count = response['statistics']['commentCount']
+            youtube_data.view_count = response['statistics']['viewCount']
+            youtube_data.video_count = response['statistics']['videoCount']
+            youtube_data.subscriber_count = response['statistics']['subscriberCount']
+            youtube_data.google_plus_user_Id = response['contentDetails']['googlePlusUserId']
+            youtube_data.description = response['snippet']['description']
+            if 'title' in response['snippet']:
+                youtube_data.title = response['snippet']['title']
+            if 'country' in response['snippet']:
+                youtube_data.country = response['snippet']['country']
+
+            youtube_data.save()
+
             print('Google plus user id : ', response['contentDetails']['googlePlusUserId'])
-            print(response['snippet']['description'], response['snippet']['title'])
-        print("===============================================")
+            print("===============================================")
 
 
 @periodic_task(
