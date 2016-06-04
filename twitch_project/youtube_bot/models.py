@@ -20,5 +20,5 @@ class YoutubeData(models.Model):
     google_plus_user_Id = models.CharField(max_length=140, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     title = models.CharField(max_length=240, blank=True, null=True)
-    channel_id = models.CharField(max_length=240, blank=True, null=True)
+    channel_id = models.CharField(max_length=240, blank=True, null=True, unique=True)
     country = models.CharField(max_length=140, blank=True, null=True)
