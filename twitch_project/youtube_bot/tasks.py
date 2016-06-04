@@ -20,25 +20,36 @@ def youtube_search(options):
     # Call the search.list method to retrieve results matching the specified
     # query term.
     # https://www.googleapis.com/youtube/v3/channels
-    search_response = youtube.channels().list(
-        # q=options['q'],
+    search_response = youtube.search().list(
+        q=options['q'],
+        type="channel",
         # location=options.location,
         # locationRadius=options.location_radius,
-        part="snippet, statistics, brandingSettings, contentDetails, contentOwnerDetails, invideoPromotion, localizations, status, topicDetails, id",
-        id="UCfzlCWGWYyIQ0aLC5w48gBQ",
-        # maxResults=options.max_results
+        order='date',
+        part="id,snippet",
+        maxResults=2
     ).execute()
 
-    print(search_response)
-    # search_videos = []
+    print(search_response['items'])
 
-    # # Merge video ids
-    # for search_result in search_response.get("items", []):
-    #     search_videos.append(search_result["id"]["videoId"])
-    # video_ids = ",".join(search_videos)
+    for item in search_response['items']:
+        # print(item)
+        # print(item['snippet']['title'])
+        # print(item['snippet']['channelId'])
+        # print(item['snippet']['description'])
 
-    # print(video_ids)
+        channel_response = youtube.channels().list(
+            part="snippet, statistics, contentDetails, id",
+            id=item['snippet']['channelId'],
+        ).execute()
 
+        print(channel_response['items'])
+        for response in channel_response['items']:
+            print(response)
+            print(response['statistics']['commentCount'], response['statistics']['viewCount'], response['statistics']['videoCount'], response['statistics']['subscriberCount'])
+            print('Google plus user id : ', response['contentDetails']['googlePlusUserId'])
+            print(response['snippet']['description'], response['snippet']['title'])
+        print("===============================================")
 
 
 @periodic_task(
@@ -47,18 +58,11 @@ def youtube_search(options):
     ignore_result=True
 )
 def fetch_search_results():
-    print("####################################3")
-    # search_objects = YoutubeSearchTerm.objects.all()
+    print("inside youtube task")
 
-    # argparser.add_argument("--q", help="Search term", default="Google")
-    # argparser.add_argument("--location", help="Location", default="37.42307,-122.08427")
-    # argparser.add_argument("--location-radius", help="Location radius", default="5km")
-    # argparser.add_argument("--max-results", help="Max results", default=25)
-    # args = argparser.parse_args()
-
-    # for search_term in search_objects:
     try:
-        youtube_search({'q': 'C# programming lessons'})
+        # TO DO search keywords must be fetched from Database
+        youtube_search({'q': 'programming lessons'})
         # logger.info("Saved " + search_term + " datap to Database")
     except HttpError, e:
         print("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))

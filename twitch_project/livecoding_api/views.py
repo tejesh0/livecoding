@@ -44,8 +44,12 @@ def livecoding_redirect_view(request):
 
 
 def fetch_schedules(request):
+    access_token = livecoding_oath(request)
+    print("################")
+    print(access_token)
+    print("#####################")
     try:
-        headers = {"Authorization": "Bearer Co4slt8uCBr8pc5BYDrPpyL2Z99EzJ"}
+        headers = {"Authorization": "Bearer " + access_token}
         response = requests.get('https://www.livecoding.tv/api/scheduledbroadcast/?limit=5&offset=5', headers=headers)
         return HttpResponse(response.content)
     except urllib2.URLError as e:
