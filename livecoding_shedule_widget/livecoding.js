@@ -8,14 +8,16 @@ var livecoding = function() {
         console.log(schedules);
         console.log(schedules.count);
 
-        livecodingDiv.id = "livecoding";
+        var node = document.createElement('div');
 
         schedules.results.forEach(function(el, index, array) {
-            livecodingDiv.innerHTML = '<p>' + el.livestream + ' : ' + el.title + '---' + el.start_time + '</p>';
-
+            var schedulePtag = document.createElement('p');
+            var scheduleDesc = document.createTextNode(el.livestream + ' : ' + el.title + '---' + el.start_time)
+            schedulePtag.appendChild(scheduleDesc);
+            node.appendChild(schedulePtag);
         });
 
-        document.getElementsByTagName('body')[0].appendChild(livecodingDiv);
+        document.getElementsByTagName('body')[0].appendChild(node);
     }
 
     function fetch_my_schedules() {

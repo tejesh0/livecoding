@@ -1,5 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from .models import AccessToken
+from django.contrib.auth.models import User
 import requests
 import json
 import urllib2
@@ -40,14 +42,37 @@ def livecoding_redirect_view(request):
         print(e)
         return HttpResponse("Failed to make POST request to fetch token")
 
-    return HttpResponse(response.content)
+    res = json.loads(response.content)
+    print res
+    access_token = res['access_token']
+    print(access_token)
+    user = User.objects.get(username='admin')
+    print user
+    a, created = AccessToken.objects.get_or_create(user=user)
+    print a, created
+    a.access_token = access_token
+    a.save()
+    print(a)
+
+    redirect = request.GET.get('redirect')
+    if redirect is None:
+        return HttpResponse(response.content)
+    else:
+        return HttpResponseRedirect(redirect)
 
 
 def fetch_schedules(request):
-    access_token = livecoding_oath(request)
-    print("################")
-    print(access_token)
-    print("#####################")
+    """
+        for now, access_token is stored for admin user and retrieved.
+        If access toekn is expired, new access token has to be registered and then
+        access this view
+    """
+    try:
+        access_token = AccessToken.objects.get(user__username='admin').access_token
+    except Exception as e:
+        print(e)
+        return HttpResponseRedirect('/livecoding/oath?redirect=/livecoding/api/scheduledbroadcast/')
+
     try:
         headers = {"Authorization": "Bearer " + access_token}
         response = requests.get('https://www.livecoding.tv/api/scheduledbroadcast/?limit=5&offset=5', headers=headers)
@@ -58,5 +83,10 @@ def fetch_schedules(request):
 
 
 def add_events_to_calendar(request):
+    """
+        adds schedules fetched from livecodingtv api endpoint (5)
+        and after adding events to users google calendar,
+        the upcoming events in google calendar are displayed 
+    """
 
     return render(request, 'add_events_to_calendar.html')
