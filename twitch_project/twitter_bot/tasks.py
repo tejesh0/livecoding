@@ -136,7 +136,7 @@ def suggest_livecoding_by_keywords():
 
 
 @periodic_task(
-    run_every=(crontab(hour='4', minute='10')),
+    run_every=(crontab(minute='*/30')),
     name="follow_followers_of_given_accounts",
     ignore_result=True
 )
