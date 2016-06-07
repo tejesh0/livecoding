@@ -12,7 +12,7 @@ PROGRAMMING_RELATED_WORDS = ['gist', 'programming', 'nodejs',
 
 
 @periodic_task(
-    run_every=(crontab(minute='*/15')),
+    run_every=(crontab(minute='*/')),
     name="like_and_retweet_livecoding_mentions",
     ignore_result=True
 )
@@ -136,7 +136,7 @@ def suggest_livecoding_by_keywords():
 
 
 @periodic_task(
-    run_every=(crontab(minute='*/1')),
+    run_every=(crontab(hour='4', minute='10')),
     name="follow_followers_of_given_accounts",
     ignore_result=True
 )
@@ -150,10 +150,8 @@ def follow_followers_of_given_accounts():
     for screen_name in screen_names:
         followers_ids = api.followers_ids(screen_name=screen_name)
 
-        print(followers_ids)
-
-        for follower_id in followers_ids[5:7]:
-            f = api.create_friendship(follower_id)
+        for follower_id in followers_ids:
+            api.create_friendship(follower_id)
 
         screen_name.is_accounts_followed = True
         screen_name.save()

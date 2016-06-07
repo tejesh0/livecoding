@@ -20,6 +20,7 @@ class CredentialsAdmin(admin.ModelAdmin):
 class FollowFollowersOfAccountAdmin(admin.ModelAdmin):
     list_display = ('screen_name', 'is_accounts_followed')
 
+
 admin.site.register(LivecodingHandle, LivecodingHandleAdmin)
 admin.site.register(KeywordSearchSuggest, KeywordSearchSuggestAdmin)
 admin.site.register(Credentials, CredentialsAdmin)
