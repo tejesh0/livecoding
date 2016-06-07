@@ -1,7 +1,7 @@
 from celery.decorators import periodic_task
 from celery.utils.log import get_task_logger
 from celery.task.schedules import crontab
-from .models import LivecodingHandle, KeywordSearchSuggest
+from .models import LivecodingHandle, KeywordSearchSuggest, FollowFollowersOfAccount
 from .views import api, BLACKLISTED_WORDS
 
 logger = get_task_logger(__name__)
@@ -133,3 +133,28 @@ def suggest_livecoding_by_keywords():
                     keyword.save()
 
         logger.info("suggest livecoding by keywords")
+
+
+@periodic_task(
+    run_every=(crontab(minute='*/1')),
+    name="follow_followers_of_given_accounts",
+    ignore_result=True
+)
+def follow_followers_of_given_accounts():
+    """
+        task to follow followers of account handles given in 
+        FollowFollowersOfAccount model
+    """
+    screen_names = FollowFollowersOfAccount.objects.filter(is_accounts_followed=False)
+
+    for screen_name in screen_names:
+        followers_ids = api.followers_ids(screen_name=screen_name)
+
+        print(followers_ids)
+
+        for follower_id in followers_ids[5:7]:
+            f = api.create_friendship(follower_id)
+
+        screen_name.is_accounts_followed = True
+        screen_name.save()
+        logger.info("followed the followers of the account!")

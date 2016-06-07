@@ -18,16 +18,6 @@ CONSUMER_KEY = credentials.consumer_key
 HOURS = 24
 SCREEN_NAME = 'NowLivecodingtv'
 
-# # https://www.livecoding.tv/developer/applications/137/
-# LIVECODING_KEY = 'Kn1zdoDZGRkcTQZW5NuA1CQ4nkjEYezmZ72knmRA'
-# LIVECODING_SECRET = '8kaCWGAWEFhUrh0vpW4oeQt2JdRehxQL3pNLAl9A3XFRlYTF0GxMvE5hcU9e2t8vHL4cBGTVOfmus5jAllwTh1CAzRS95mwI2F8I11c9xeFzAcXih4sPLiITCdUAisGz'
-# LIVECODING_REDIRECT_URI = 'http://localhost:5000' + '/twitter/livecoding-redirect'
-# MY_CODE = 'qImSS03cdLm7CDeXDlZBoQ9ZL62bS8'
-
-# {"access_token": "GAp8cjFJ0QfcU82ZvKmlE8BNZJjNoS",
-# "token_type": "Bearer", "expires_in": 36000,
-# "refresh_token": "pcyIJzc1HK1YJ0CXHqS1BJ45p83OOj", "scope": "read"}
-
 
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.secure = True
@@ -159,3 +149,20 @@ def like_livecoding_tweets(request):
                     pass
             tweet_count = tweet_count + 1
     return render(request, 'liked_livecoding_tweets.html', context={'favorited_tweets': data})
+
+
+def follow_followers_of_given_accounts(request):
+    """
+        view to follow followers of account handles given in 
+        FollowFollowersOfAccount model
+    """
+
+    followers_ids = api.followers_ids(screen_name='html5')
+
+    print(followers_ids)
+
+    for follower_id in followers_ids[5:7]:
+        f = api.create_friendship(follower_id)
+    
+
+    return HttpResponse("Success")
