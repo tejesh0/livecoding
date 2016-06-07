@@ -12,7 +12,7 @@ PROGRAMMING_RELATED_WORDS = ['gist', 'programming', 'nodejs',
 
 
 @periodic_task(
-    run_every=(crontab(minute='*/')),
+    run_every=(crontab(minute='*/30')),
     name="like_and_retweet_livecoding_mentions",
     ignore_result=True
 )
