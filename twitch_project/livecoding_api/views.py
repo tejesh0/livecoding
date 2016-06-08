@@ -12,7 +12,7 @@ import urllib2
 # https://www.livecoding.tv/developer/applications/137/
 LIVECODING_KEY = 'Kn1zdoDZGRkcTQZW5NuA1CQ4nkjEYezmZ72knmRA'
 LIVECODING_SECRET = '8kaCWGAWEFhUrh0vpW4oeQt2JdRehxQL3pNLAl9A3XFRlYTF0GxMvE5hcU9e2t8vHL4cBGTVOfmus5jAllwTh1CAzRS95mwI2F8I11c9xeFzAcXih4sPLiITCdUAisGz'
-LIVECODING_REDIRECT_URI = 'http://localhost:5000' + '/livecoding/redirect'
+LIVECODING_REDIRECT_URI = '162.243.104.58:8004' + '/livecoding/redirect'
 MY_CODE = 'qImSS03cdLm7CDeXDlZBoQ9ZL62bS8'
 
 # {"access_token": "GAp8cjFJ0QfcU82ZvKmlE8BNZJjNoS",
