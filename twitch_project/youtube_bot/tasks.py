@@ -78,7 +78,6 @@ def fetch_search_results():
 
     for search_filter in search_filters:
         try:
-            # TO DO search keywords must be fetched from Database
             youtube_search({'q': search_filter.search_term})
             # logger.info("Saved " + search_term + " datap to Database")
         except HttpError, e:

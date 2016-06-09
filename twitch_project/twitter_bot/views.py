@@ -34,7 +34,11 @@ BLACKLISTED_WORDS = ['penis', 'drugs', 'sex', 'race', 'kiss']
 
 
 def retweet_and_like_following_account_tweets(request):
-
+    """
+    nowlivecodingtv account followes some people.If their tweets
+    satisfy min. threshold of retweet and favorite count, the tweet is retweeted
+    and favorited by @nowlivecodingtv 
+    """
     # get following accounts
     friends_ids = api.friends_ids(screen_name=SCREEN_NAME)
 
@@ -70,6 +74,11 @@ def retweet_and_like_following_account_tweets(request):
 
 
 def retweet_and_like(search_results):
+    """
+    Based on search words entered in django admin panel,if tweets
+    satisfy min. threshold of retweet and favorite count, the tweet is retweeted
+    and favorited by @nowlivecodingtv 
+    """
     retweet_count = 0
     for status in search_results:
         flag = True
@@ -97,6 +106,10 @@ def retweet_and_like(search_results):
 
 
 def retweet_and_like_random_account_tweets(request):
+    """
+    retweet and fav tweets by a specific twitter account or randomly chosen one.
+    results are limited to san francisco bay area tweets.
+    """
     if request.method == 'POST':
         print(request.POST.get('keyword'))
         if request.POST.get('keyword') is None:
@@ -116,6 +129,9 @@ def retweet_and_like_random_account_tweets(request):
 
 
 def like_livecoding_tweets(request):
+    """
+    favorite the tweets of livecoding tweets
+    """
     q = request.GET.get('q')
     if q is None:
         search_results = api.search(q='@livecodingtv')

@@ -22,3 +22,4 @@ class YoutubeData(models.Model):
     title = models.CharField(max_length=240, blank=True, null=True)
     channel_id = models.CharField(max_length=240, blank=True, null=True, unique=True)
     country = models.CharField(max_length=140, blank=True, null=True)
+    is_already_reviewed = models.BooleanField(default=False)

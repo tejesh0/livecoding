@@ -21,6 +21,9 @@ MY_CODE = 'qImSS03cdLm7CDeXDlZBoQ9ZL62bS8'
 
 
 def livecoding_oath(request):
+    """
+    livecoding oath2 request access permissions dialog
+    """
     auth_end_point = 'https://www.livecoding.tv/o/authorize/?scope=read&state=' + '46c3c39d-512a-4bd0-8d59-63d7c9732180' + \
         '&redirect_uri=' + LIVECODING_REDIRECT_URI + '&response_type=code&client_id=' + LIVECODING_KEY
     print(auth_end_point)
@@ -29,6 +32,9 @@ def livecoding_oath(request):
 
 
 def livecoding_redirect_view(request):
+    """
+    livecoding oath2 fetch access token after permission dialog
+    """
 
     code = request.GET.get('code')
     if code is None:
