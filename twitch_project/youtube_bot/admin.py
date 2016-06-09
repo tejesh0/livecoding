@@ -9,7 +9,7 @@ class YoutubeSearchFiltersAdmin(admin.ModelAdmin):
 
 
 class YoutubeDataAdmin(admin.ModelAdmin):
-    list_display = ('comment_count', 'view_count', 'video_count', 'subscriber_count',
+    list_display = ('is_already_reviewed', 'comment_count', 'view_count', 'video_count', 'subscriber_count',
                     'google_plus_user_Id', 'description', 'title', 'channel_id', 'country')
 
 

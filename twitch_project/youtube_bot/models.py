@@ -11,6 +11,10 @@ class YoutubeSearchFilters(models.Model):
     # location_radius = models.CharField(max_length=10, help_text="Example: 5mi, 10km", default="20km")
     order = models.CharField(max_length=15, default="viewCount")
 
+    class Meta:
+        verbose_name = 'add search word'
+        verbose_name_plural = 'add search words'
+
 
 class YoutubeData(models.Model):
     comment_count = models.PositiveIntegerField(default=0)
@@ -23,3 +27,7 @@ class YoutubeData(models.Model):
     channel_id = models.CharField(max_length=240, blank=True, null=True, unique=True)
     country = models.CharField(max_length=140, blank=True, null=True)
     is_already_reviewed = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = 'view data fetched'
+        verbose_name_plural = 'view data fetched'
