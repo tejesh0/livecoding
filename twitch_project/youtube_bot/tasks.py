@@ -26,7 +26,7 @@ def youtube_search(options):
         # locationRadius=options.location_radius,
         order='date',
         part="id,snippet",
-        maxResults=5
+        maxResults=25
     ).execute()
 
     print(search_response['items'])
