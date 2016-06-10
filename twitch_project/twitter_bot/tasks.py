@@ -135,24 +135,27 @@ def suggest_livecoding_by_keywords():
         logger.info("suggest livecoding by keywords")
 
 
-# @periodic_task(
-#     run_every=(crontab(minute='*/1')),
-#     name="follow_followers_of_given_accounts",
-#     ignore_result=True
-# )
-# def follow_followers_of_given_accounts():
-#     """
-#         task to follow followers of account handles given in 
-#         FollowFollowersOfAccount model
-#     """
-#     screen_names = FollowFollowersOfAccount.objects.filter(is_accounts_followed=False)
+@periodic_task(
+    run_every=(crontab(0, 0, day_of_month='2')),
+    name="follow_followers_of_given_accounts",
+    ignore_result=True
+)
+def follow_followers_of_given_accounts():
+    """
+        task to follow followers of account handles given in 
+        FollowFollowersOfAccount model
+    """
+    import time
 
-#     for screen_name in screen_names:
-#         followers_ids = api.followers_ids(screen_name=screen_name)
+    screen_names = FollowFollowersOfAccount.objects.filter(is_accounts_followed=False)
 
-#         for follower_id in followers_ids:
-#             api.create_friendship(follower_id)
+    for screen_name in screen_names:
+        followers_ids = api.followers_ids(screen_name=screen_name)
 
-#         screen_name.is_accounts_followed = True
-#         screen_name.save()
-#         logger.info("followed the followers of the account!")
+        for follower_id in followers_ids:
+            time.sleep(1800)
+            api.create_friendship(follower_id)
+
+        screen_name.is_accounts_followed = True
+        screen_name.save()
+        logger.info("followed the followers of the account!")
